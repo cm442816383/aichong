@@ -1,0 +1,69 @@
+import axios from "axios"
+
+export default {
+    addorder(obj,callback){
+        axios.get('/addorder',{
+            params:obj
+        })
+        .then(callback);
+    },
+    selAddres2(obj,callback){
+        axios.get('/seladdres',{
+            params:obj
+        })
+        .then(callback);
+    },
+    selAddres(callback){
+        axios.get('/seladdres')
+        .then(callback);
+    },
+    delm(obj,callback){
+        axios.get("/del",{params:obj})
+        .then(callback)
+    },
+    addAddres(obj,callback){
+        axios.get('/addaddres',{
+            params:obj
+        })
+        .then(callback);
+    },
+    setaccounts(obj,callback){
+        axios.get('/setaccounts',{
+            params:obj
+        })
+        .then(callback);
+    },
+    changCount(obj,callback){
+        axios.get('/reducecart',{
+            params:obj
+        })
+        .then(callback)
+    },
+    getCart(callback){
+        axios.get('/findcart')
+        .then(callback)
+    },
+    addCart(obj,callback){
+        axios.get('/addCart',{
+            params:obj
+        })
+        .then(callback);
+    },
+    // 获取产品列表
+    getProducts(obj,callback){
+        // console.log(obj)// => {kw: "猫粮", pno: 1, pageSize: 4}
+        axios.get('/product',
+        {
+            params:obj 
+        })
+        .then(callback);
+    },
+    // 获取详情页
+    getDetail(pid,callback){
+        axios.get('/detail',
+        {
+            params:{pid}
+        })
+        .then(callback);
+    }
+};

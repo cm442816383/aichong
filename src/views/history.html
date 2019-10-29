@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<style>
+	*{margin:0;padding:0;box-sizing: border-box;}
+	html{overflow-y: scroll;}
+	body{  background:#fff; color:#333;font-size:14px; font-family: Microsoft Yahei; -webkit-text-size-adjust:none;  }
+	ol,ul {list-style: none;}
+	h1,h2,h3,h4,h5,h6 {  font-weight:normal;  font-size:100%;  }
+	address,i,em,strong {  font-style:normal;  font-weight:normal;  }
+	a{ color:#555; text-decoration:none;}
+	input,textarea,select,button {  font:14px Microsoft Yahei,Verdana,Helvetica,Arial,sans-serif;  border:none;  outline: none;  }
+	/*搜索*/
+	.d_setop{position: fixed;top: 0;left: 0;width: 6.9rem;height: .66rem;background: #FFFFFF;margin: 0 .3rem;}
+	.d_setop img{height: .32rem;float: left;margin-top: .17rem;}
+	.d_setop input{float: left;height: .66rem;background: #f0f0f0;width: 5.5rem;border-radius: .5rem;margin-left: .3rem;padding-left: .3rem;color: #333333;line-height: .66rem;font-size: .28rem;}
+	.d_setop p{float: right;font-size: .28rem;line-height: .66rem;color: #333333;}
+	.d_secontent p{height:.88rem ;padding: 0 .3rem;border-bottom: solid 1px #E6E6E6;line-height: .88rem;font-size: .26rem;color: #333333;}
+	.d_seclear{line-height: 1rem;color: #666666;font-size: .26rem;text-align: center;}
+</style>
+<body>
+<div class="d_setop">
+	<a href="javascript:history.go(-1);"><img src="" /></a>
+	<input type="text" placeholder="请输入用户昵称或UID" />
+	<p>搜索</p>
+</div>
+<p style="padding-top: .66rem;"></p>
+<div class="d_secontent">
+</div>
+<p class="d_seclear">清除搜索历史</p>
+<p class="hint"></p>
+</body>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.js"></script>
+<script>
+	document.documentElement.style.fontSize = document.documentElement.clientWidth / 7.5 + 'px';
+	$(function(){
+		var str=localStorage.historyItems;
+		var s = '';
+		if(str==undefined){
+			$(".d_seclear").html('暂无搜索记录...')
+		}else{
+			var strs= new Array();
+			strs=str.split("|");
+			for(var i=0;i<strs.length;i++){
+				s+= "<a href='/search?keyword="+strs[i]+"' ><p>"+strs[i]+"</p></a>";
+			}
+			$(".d_secontent").append(s);
+		}
+		$(".d_setop p").on("click",function(){
+			if($('.d_setop input').val()==''){
+				hint("请输入用户昵称或UID",1500)
+			}else{
+//			请求接口成功跳转
+				location.href='/search?keyword='+$('.d_setop input').val();
+				var keyword=$('.d_setop input').val();
+				setHistoryItems(keyword);
+			}
+		});
+		$(".d_seclear").on("click",function(){
+//		请求接口成功清除
+			$(".d_secontent").empty();
+			clearHistory();
+		})
+		var isOpen=true,page=0;
+		$(".d_ilcontent .d_ilbtn").on("click",function(){
+			var index=$(".d_ilcontent .d_ilbtn").index(this);
+//		数据请求
+			$(".d_ilcontent>div").eq(index).hide();
+		})
+	})
+	//存值方法,新的值添加在首位
+	function setHistoryItems(keyword) {
+		let { historyItems } = localStorage;
+		if (historyItems === undefined) {
+			localStorage.historyItems = keyword;
+		} else {
+			historyItems = keyword + '|' + historyItems.split('|').filter(e => e != keyword).join('|');
+			localStorage.historyItems = historyItems;
+		}
+	}
+	//清除值
+	function clearHistory() {
+		localStorage.removeItem('historyItems');
+		$(".d_seclear").html('暂无搜索记录...')
+		var div = document.getElementsByClassName("d_secontent");
+		/*while(div.hasChildNodes()) //当div下还存在子节点时 循环继续
+		{
+			div.removeChild(div.firstChild);
+		}*/
+		// $("#lssslb").append('<div class="rmssts">暂无搜索记录...</div>');
+		window.location.reload();
+	}
+</script>
+</html>
